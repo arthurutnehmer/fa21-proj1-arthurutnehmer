@@ -23,12 +23,15 @@ typedef struct HashBucketEntry {
   void *key;
   void *data;
   struct HashBucketEntry *next;
-} HashBucketEntry;
+}HashBucketEntry;
 
 /* Task 1.1 */
-typedef struct HashTable {
-  // -- TODO --
-  // HINT: Take a look at createHashTable.
+typedef struct HashTable
+{
+    unsigned int (*hashFunction) (void *);
+    int (*equalFunction) (void *, void *);
+    struct HashBucketEntry **buckets;
+    int size;
 } HashTable;
 
 /*
