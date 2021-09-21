@@ -124,7 +124,6 @@ void readDictionary(char *dictName)
     }
 }
 
-
 /* Task 4 */
 void processInput()
 {
@@ -137,7 +136,7 @@ void processInput()
     {
         //if we encounter a space or a new line we assume we
         //got to end of line without printing or finding a new thing.
-        if(c== ' ' | c == '\n'  | !isalnum(c) )
+        if(c== ' ' | c == '\n'  | !isalnum(c) | (wordIndex>WORD_LENGTH-2)  )
         {
             printf("%s",word);
             printf("%c", c);
@@ -151,39 +150,47 @@ void processInput()
         word[wordIndex]= c;
         //if we find the word is in the dictionary we change it
         //check for exact
-
+        c = getchar();
+        //test if this is a large number.
+        if(isdigit(c) & isdigit(word[wordIndex]))
+        {
+            wordIndex++;
+            continue;
+        }
+        //test if this is exact.
         if( ((char *)findData(dictionary, word)))
         {
             printf("%s", (char *)findData(dictionary, word));
             memset(word,0,WORD_LENGTH);
             wordIndex = 0;
-            c= getchar();
             continue;
         }
+        //test if this is lower case.
         if( (char *)findData(dictionary, toLowerExceptFirst(word, strlen(word))) )
         {
             printf("%s", (char *)findData(dictionary, toLowerExceptFirst(word, strlen(word))));
 
             memset(word,0,WORD_LENGTH);
             wordIndex = 0;
-            c= getchar();
             continue;
         }
-
+        //test if this is all lower.
         if( ((char *)findData(dictionary, toLower(word, strlen(word))))     )
         {
             printf("%s", (char *)findData(dictionary, toLower(word, strlen(word))));
             memset(word,0,WORD_LENGTH);
             wordIndex = 0;
-            c= getchar();
             continue;
         }
 
 
-        c = getchar();
         wordIndex++;
-
     }
+
+        printf("%s",word);
+        memset(word,0,WORD_LENGTH);
+
+
 }
 
 
