@@ -38,6 +38,7 @@ HashTable *dictionary;
  * to standard error (stderr) as shown and it will be ignored in 
  * the grading process.
  */
+#define WORD_LENGTH 1000
 #ifndef _PHILPHIX_UNITTEST
 #define WORD_LENGTH 1000
 
@@ -93,8 +94,7 @@ int main(int argc, char **argv)
 }
 #endif /* _PHILPHIX_UNITTEST */
 
-/* Task 3 */
-void readDictionary(char *dictName)
+/* Task 3 */void readDictionary(char *dictName)
 {
     FILE * file ;
     file =  fopen(dictName, "r");
@@ -103,32 +103,52 @@ void readDictionary(char *dictName)
         fprintf(stderr, "File failed to open!\n");
         exit(61);
     }
-    char line[WORD_LENGTH];
-    char *delimiter = " \t";
 
-
-    while(fgets(line, WORD_LENGTH, file) != NULL)
+    char ch;
+    ch = fgetc(file);
+    char word [WORD_LENGTH];
+    char key[WORD_LENGTH];
+    int thisOne = 1;
+    int thatOne = 0;
+    while(ch != EOF)
     {
-        char *key = (char *)malloc(sizeof(char) * WORD_LENGTH);
-        char *string = (char *)malloc(sizeof(char) * WORD_LENGTH);
-
-        key =strcpy(key,strtok(line, delimiter));
-        string = strcpy(string,strtok(NULL, delimiter));
-
-        printf("->>");
-        printf(key);
-        printf(string)
-        printf("\n");
-
-        for(char *temp = string; (*temp) != '\0';  temp++)
+        if(ch == ' ' | ch == '\t' | ch == '\n')
         {
-            if(*temp == '\n')
-            {
-                *temp = '\0';
-                break;
-            }
+            ch = fgetc(file);
+            continue;
         }
-        insertData(dictionary, key, string);
+
+        int wordIndex = 0;
+        while( (ch != EOF) & (ch != '\t') & (ch != '\n') & (ch != ' ')  )
+        {
+            word[wordIndex] = ch;
+            ch = fgetc(file);
+            wordIndex++;
+        }
+
+        if(thisOne)
+        {
+            strncpy(key, word, sizeof(key));
+            thatOne = 1;
+            thisOne = 0;
+        }
+        else if(thatOne)
+        {
+            //another friggen key
+            char *anotherDamnkey = (char *)malloc(sizeof(char) * WORD_LENGTH);
+            char *theString = (char *)malloc(sizeof(char) * WORD_LENGTH);
+            strcpy(theString, word);
+            strcpy(anotherDamnkey, key);
+
+            insertData(dictionary, anotherDamnkey, theString);
+
+            memset(key,0,WORD_LENGTH);
+            thatOne = 0;
+            thisOne = 1;
+        }
+        wordIndex = 0;
+        memset(word,0,WORD_LENGTH);
+        ch = fgetc(file);
 
     }
 }
@@ -146,7 +166,7 @@ void processInput()
     {
         //if we encounter a space or a new line we assume we
         //got to end of line without printing or finding a new thing.
-        if(c== ' ' | c == '\n'  | !isalnum(c) | (wordIndex>WORD_LENGTH-2)  )
+        if(c== ' ' | c == '\n'  | !isalnum(c) | (wordIndex>WORD_LENGTH-1)  )
         {
             printf("%s",word);
             printf("%c", c);
@@ -196,6 +216,6 @@ void processInput()
     }
         printf("%s",word);
         memset(word,0,WORD_LENGTH);
-
-
 }
+
+
