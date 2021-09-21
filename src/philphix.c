@@ -39,6 +39,32 @@ HashTable *dictionary;
  * the grading process.
  */
 #ifndef _PHILPHIX_UNITTEST
+
+
+
+
+char *toLower(char *str, size_t len)
+{
+    char *str_l = calloc(len+1, sizeof(char));
+
+    for (size_t i = 0; i < len; ++i)
+    {
+        str_l[i] = tolower((unsigned char)str[i]);
+    }
+    return str_l;
+}
+
+char *toLowerExceptFirst(char *str, size_t len)
+{
+    char *str_l = calloc(len, sizeof(char));
+
+    for (size_t i = 1; i < len; ++i)
+    {
+        str_l[i] = tolower((unsigned char)str[i]);
+    }
+    return str_l;
+}
+
 int main(int argc, char **argv) {
   if (argc != 2) {
     fprintf(stderr, "Specify a dictionary\n");
@@ -110,41 +136,59 @@ void processInput()
     memset(word,0,60);
     while (c != EOF)
     {
-        //if we encounter a space or a new line
+        //if we encounter a space or a new line we assume we
+        //got to end of line without printing or finding a new thing.
         if(c== ' ' | c == '\n')
         {
-
-            //if we find the word is in the dictionary we change it
-            char tmp;
-            if(tmp = findData(dictionary, word))
-            {
-                printf("->   ");
-                printf("%s", (char *)findData(dictionary, word));
-                printf("\n");
-            }
-            //or we leave it alone
-            else
-            {
-                printf("->   ");
-                printf(word);
-                printf("\n");
-            }
-
-            //Then we erase the word and go to find the next word.
+            printf("%s",word);
+            printf("%c", c);
             memset(word,0,60);
             c = getchar();
             wordIndex = 0;
             continue;
         }
 
-        //sets current word array to character, gets next character, and adds to index.
+        //add current character to word as its not empty or new line
         word[wordIndex]= c;
+        //if we find the word is in the dictionary we change it
+        //check for exact
+
+        if( ((char *)findData(dictionary, word)))
+        {
+            printf("%s", (char *)findData(dictionary, word));
+            memset(word,0,60);
+            wordIndex = 0;
+            c= getchar();
+            continue;
+        }
+        if( (char *)findData(dictionary, toLowerExceptFirst(word, strlen(word))) )
+        {
+            printf("%s", (char *)findData(dictionary, toLowerExceptFirst(word, strlen(word))));
+
+            memset(word,0,60);
+            wordIndex = 0;
+            c= getchar();
+            continue;
+        }
+
+        if( ((char *)findData(dictionary, toLower(word, strlen(word))))     )
+        {
+            printf("%s", (char *)findData(dictionary, toLower(word, strlen(word))));
+            memset(word,0,60);
+            wordIndex = 0;
+            c= getchar();
+            continue;
+        }
+
 
         c = getchar();
         wordIndex++;
 
     }
 }
+
+
+
 
 
 
