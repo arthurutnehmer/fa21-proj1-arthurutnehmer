@@ -84,7 +84,7 @@ void *findData(HashTable *table, void *key)
 unsigned int stringHash(void *s)
 {
     char *string = (char *) s;
-    unsigned int hash = 5381;
+    unsigned int hash = 10000;
     int c;
     while ((c = *string++)) {
         hash = ((hash << 5) + hash) + c;

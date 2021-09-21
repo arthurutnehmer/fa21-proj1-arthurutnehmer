@@ -137,7 +137,7 @@ void processInput()
     {
         //if we encounter a space or a new line we assume we
         //got to end of line without printing or finding a new thing.
-        if(c== ' ' | c == '\n')
+        if(c== ' ' | c == '\n'  | !isalnum(c) )
         {
             printf("%s",word);
             printf("%c", c);
