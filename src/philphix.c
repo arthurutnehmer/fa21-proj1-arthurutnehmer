@@ -38,9 +38,9 @@ HashTable *dictionary;
  * to standard error (stderr) as shown and it will be ignored in 
  * the grading process.
  */
-#define WORD_LENGTH 1000
+#define WORD_LENGTH 60
 #ifndef _PHILPHIX_UNITTEST
-#define WORD_LENGTH 1000
+#define WORD_LENGTH 60
 
 
 
@@ -106,10 +106,11 @@ int main(int argc, char **argv)
 
     char ch;
     ch = fgetc(file);
-    char word [WORD_LENGTH];
-    char key[WORD_LENGTH];
+    char *word = (char *)malloc(sizeof(char) * WORD_LENGTH);
+    char *key = (char *)malloc(sizeof(char) * WORD_LENGTH);
     int thisOne = 1;
     int thatOne = 0;
+    int currentWordLengthCap = WORD_LENGTH;
     while(ch != EOF)
     {
         if(ch == ' ' | ch == '\t' | ch == '\n')
@@ -121,6 +122,12 @@ int main(int argc, char **argv)
         int wordIndex = 0;
         while( (ch != EOF) & (ch != '\t') & (ch != '\n') & (ch != ' ')  )
         {
+            //if to large, realloc.
+            if(wordIndex+1 > currentWordLengthCap)
+            {
+                word = realloc(word, sizeof(char) * currentWordLengthCap*2);
+                currentWordLengthCap = currentWordLengthCap*2;
+            }
             word[wordIndex] = ch;
             ch = fgetc(file);
             wordIndex++;
@@ -128,49 +135,65 @@ int main(int argc, char **argv)
 
         if(thisOne)
         {
-            strncpy(key, word, sizeof(key));
+            //give key more memoery since it could be larger.
+            key = realloc(key, sizeof(char) * currentWordLengthCap);
+            strncpy(key, word, strlen(word));
             thatOne = 1;
             thisOne = 0;
         }
         else if(thatOne)
         {
             //another friggen key
-            char *anotherDamnkey = (char *)malloc(sizeof(char) * WORD_LENGTH);
-            char *theString = (char *)malloc(sizeof(char) * WORD_LENGTH);
+            char *anotherDamnkey = (char *)malloc(sizeof(char) * strlen(key)+1);
+            char *theString = (char *)malloc(sizeof(char) * strlen(word)+1);
             strcpy(theString, word);
             strcpy(anotherDamnkey, key);
 
-            insertData(dictionary, anotherDamnkey, theString);
-
-            memset(key,0,WORD_LENGTH);
+            insertData(dictionary, key,theString);
+            //reset the key memeory
+            remove(key);
             thatOne = 0;
             thisOne = 1;
+            currentWordLengthCap = WORD_LENGTH;
+            key = (char *)malloc(sizeof(char) * WORD_LENGTH);
         }
         wordIndex = 0;
-        memset(word,0,WORD_LENGTH);
+        //reset the memeory
+        remove(word);
+        word = (char *)malloc(sizeof(char) * WORD_LENGTH);
         ch = fgetc(file);
 
     }
 }
 
+
 /* Task 4 */
 
 void processInput()
 {
-    char word[WORD_LENGTH];
+    char *word = (char *)malloc(sizeof(char) * WORD_LENGTH);
     char c;
     c = getchar();
     int wordIndex = 0;
-    memset(word,0,WORD_LENGTH);
+    int currentLargestWord = WORD_LENGTH;
     while (c != EOF)
     {
         //if we encounter a space or a new line we assume we
         //got to end of line without printing or finding a new thing.
-        if(c== ' ' | c == '\n'  | !isalnum(c) | (wordIndex>WORD_LENGTH-1)  )
+        if(wordIndex+1> currentLargestWord )
+        {
+            word = realloc(word, sizeof(char) * currentLargestWord*2);
+            currentLargestWord = currentLargestWord*2;
+        }
+
+        if(c== ' ' | c == '\n'  | !isalnum(c) )
         {
             printf("%s",word);
             printf("%c", c);
-            memset(word,0,WORD_LENGTH);
+            //clear the word.
+            remove(word);
+            word = (char *)malloc(sizeof(char) * WORD_LENGTH);
+            //get next char
             c = getchar();
             wordIndex = 0;
             continue;
@@ -191,7 +214,9 @@ void processInput()
         if( ((char *)findData(dictionary, word)))
         {
             printf("%s", (char *)findData(dictionary, word));
-            memset(word,0,WORD_LENGTH);
+            //remove word
+            remove(word);
+            word = (char *)malloc(sizeof(char) * WORD_LENGTH);
             wordIndex = 0;
             continue;
         }
@@ -200,7 +225,8 @@ void processInput()
         {
             printf("%s", (char *)findData(dictionary, toLowerExceptFirst(word, strlen(word))));
 
-            memset(word,0,WORD_LENGTH);
+            remove(word);
+            word = (char *)malloc(sizeof(char) * WORD_LENGTH);
             wordIndex = 0;
             continue;
         }
@@ -208,14 +234,15 @@ void processInput()
         if( ((char *)findData(dictionary, toLower(word, strlen(word))))     )
         {
             printf("%s", (char *)findData(dictionary, toLower(word, strlen(word))));
-            memset(word,0,WORD_LENGTH);
+            remove(word);
+            word = (char *)malloc(sizeof(char) * WORD_LENGTH);
             wordIndex = 0;
             continue;
         }
         wordIndex++;
     }
         printf("%s",word);
-        memset(word,0,WORD_LENGTH);
+        remove(word);
 }
 
 

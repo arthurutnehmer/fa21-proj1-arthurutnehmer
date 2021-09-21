@@ -191,3 +191,16 @@ testpassedall:
 unittest: 
 	$(CC) $(LDFLAGS) -D _PHILPHIX_UNITTEST ./tests/phil_test.c ./src/philphix.c ./src/hashtable.c -o unittest $(CUNIT)
 	./unittest
+
+mytest: clean philphix
+	touch tests/basic/test_mytest.out
+	rm tests/basic/test_mytest.out
+	@echo "================Running Program...================="
+	cat custom_tests/mytest/mytest.in | ./philphix custom_tests/mytest/mytest.dict > custom_tests/mytest/mytest.out
+	@echo "================Program Finished!=================="
+	@echo ""
+	@echo "Difference between test output and reference output"
+	@echo "---------------------------------------------------"
+	@diff custom_tests/mytest/mytest.out custom_tests/mytest/mytest.ref
+	@echo "-----------------------None!-----------------------"
+	@echo
