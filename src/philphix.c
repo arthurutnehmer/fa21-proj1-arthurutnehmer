@@ -66,7 +66,8 @@ char *toLowerExceptFirst(char *str, size_t len)
     return str_l;
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
   if (argc != 2) {
     fprintf(stderr, "Specify a dictionary\n");
     return 1;
@@ -104,6 +105,8 @@ void readDictionary(char *dictName)
     }
     char line[WORD_LENGTH];
     char *delimiter = " \t";
+
+
     while(fgets(line, WORD_LENGTH, file) != NULL)
     {
         char *key = (char *)malloc(sizeof(char) * WORD_LENGTH);
@@ -111,6 +114,11 @@ void readDictionary(char *dictName)
 
         key =strcpy(key,strtok(line, delimiter));
         string = strcpy(string,strtok(NULL, delimiter));
+
+        printf("->>");
+        printf(key);
+        printf(string)
+        printf("\n");
 
         for(char *temp = string; (*temp) != '\0';  temp++)
         {
@@ -121,10 +129,12 @@ void readDictionary(char *dictName)
             }
         }
         insertData(dictionary, key, string);
+
     }
 }
 
 /* Task 4 */
+
 void processInput()
 {
     char word[WORD_LENGTH];
@@ -182,81 +192,10 @@ void processInput()
             wordIndex = 0;
             continue;
         }
-
-
         wordIndex++;
     }
-
         printf("%s",word);
         memset(word,0,WORD_LENGTH);
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
-/*
-
-  char c;
-    char word[60];
-    int i = 0;
-    char *sic = " [sic]";
-    int t1, t2, t3;
-    while (c = getchar())
-    {
-
-        if (isalpha(c)) {
-            word[i] = c;
-            i++;
-        } else {
-            word[i] = '\0';
-            if (word[0] != '\0') {
-                fprintf(stdout, "%s", word);
-                char tmp[60];
-                strcpy(tmp, word);
-                t1 = t2 = t3 = 0;
-                if (findData(dictionary, tmp) != NULL) {
-                    t1 = 1;
-                }
-
-                int j = 0;
-                for (j = 1; tmp[j] != '\0'; j++) {
-                    tmp[j] = tolower(tmp[j]);
-                }
-                if (findData(dictionary, tmp) != NULL) {
-                    t2 = 1;
-                }
-
-
-                tmp[0] = tolower(tmp[0]);
-                if (findData(dictionary, tmp) != NULL) {
-                    t3 = 1;
-                }
-
-                if (!t1 && !t2 && !t3) {
-                    fprintf(stdout, "%s", sic);
-                }
-            }
-
-            i = 0;
-
-            if (c != EOF) {
-                putchar(c);
-            } else {
-                break;
-            }
-        }
-    }
-
-
-
- *
- */
