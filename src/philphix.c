@@ -39,7 +39,7 @@ HashTable *dictionary;
  * the grading process.
  */
 #ifndef _PHILPHIX_UNITTEST
-
+#define WORD_LENGTH 1000
 
 
 
@@ -102,14 +102,12 @@ void readDictionary(char *dictName)
         fprintf(stderr, "File failed to open!\n");
         exit(61);
     }
-
-    int maxCharacters = 100;
-    char line[maxCharacters];
+    char line[WORD_LENGTH];
     char *delimiter = " \t";
-    while(fgets(line, maxCharacters, file) != NULL)
+    while(fgets(line, WORD_LENGTH, file) != NULL)
     {
-        char *key = (char *)malloc(sizeof(char) * maxCharacters);
-        char *string = (char *)malloc(sizeof(char) * maxCharacters);
+        char *key = (char *)malloc(sizeof(char) * WORD_LENGTH);
+        char *string = (char *)malloc(sizeof(char) * WORD_LENGTH);
 
         key =strcpy(key,strtok(line, delimiter));
         string = strcpy(string,strtok(NULL, delimiter));
@@ -130,11 +128,11 @@ void readDictionary(char *dictName)
 /* Task 4 */
 void processInput()
 {
-    char word[60];
+    char word[WORD_LENGTH];
     char c;
     c = getchar();
     int wordIndex = 0;
-    memset(word,0,60);
+    memset(word,0,WORD_LENGTH);
     while (c != EOF)
     {
         //if we encounter a space or a new line we assume we
@@ -143,7 +141,7 @@ void processInput()
         {
             printf("%s",word);
             printf("%c", c);
-            memset(word,0,60);
+            memset(word,0,WORD_LENGTH);
             c = getchar();
             wordIndex = 0;
             continue;
@@ -157,7 +155,7 @@ void processInput()
         if( ((char *)findData(dictionary, word)))
         {
             printf("%s", (char *)findData(dictionary, word));
-            memset(word,0,60);
+            memset(word,0,WORD_LENGTH);
             wordIndex = 0;
             c= getchar();
             continue;
@@ -166,7 +164,7 @@ void processInput()
         {
             printf("%s", (char *)findData(dictionary, toLowerExceptFirst(word, strlen(word))));
 
-            memset(word,0,60);
+            memset(word,0,WORD_LENGTH);
             wordIndex = 0;
             c= getchar();
             continue;
@@ -175,7 +173,7 @@ void processInput()
         if( ((char *)findData(dictionary, toLower(word, strlen(word))))     )
         {
             printf("%s", (char *)findData(dictionary, toLower(word, strlen(word))));
-            memset(word,0,60);
+            memset(word,0,WORD_LENGTH);
             wordIndex = 0;
             c= getchar();
             continue;
