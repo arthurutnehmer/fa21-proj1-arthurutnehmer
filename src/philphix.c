@@ -56,12 +56,13 @@ char *toLower(char *str, size_t len)
 
 char *toLowerExceptFirst(char *str, size_t len)
 {
-    char *str_l = calloc(len, sizeof(char));
+    char *str_l = calloc(len+1, sizeof(char));
 
-    for (size_t i = 1; i < len; ++i)
+    for (size_t i = 0; i < len; ++i)
     {
         str_l[i] = tolower((unsigned char)str[i]);
     }
+    str_l[0] = str[0];
     return str_l;
 }
 
